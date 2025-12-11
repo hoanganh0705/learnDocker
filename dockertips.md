@@ -21,3 +21,11 @@ use docker image prune -a to remove all unused images from your system. This com
 add --rm flag when running a container with docker run to automatically remove the container once it stops. This is useful for temporary containers that you don't need to keep after they have finished executing, helping to keep your system clean and free of unused containers. For example, `docker run --rm myimage` will run the container and delete it as soon as it exits.
 
 use docker image inspect <image_id> to view detailed information about a specific Docker image. This command provides metadata about the image, including its layers, creation date, size, and configuration details. It is useful for understanding the structure and properties of an image, especially when troubleshooting or optimizing your Docker setup.
+
+use docker cp to copy files or directories between your host machine and a Docker container. This command allows you to transfer data in and out of containers without needing to set up shared volumes. For example, `docker cp <container_id>:/path/to/file /host/path` copies a file from the container to the host, while `docker cp /host/path <container_id>:/path/to/destination` copies a file from the host to the container.
+
+use docker cp when you need to extract logs or configuration files from a container for analysis or backup. This is particularly useful when you want to preserve important data before removing a container or when you need to share files between the host and the container for development purposes.
+
+docker tags include 2 parts: the repository name and the tag name, separated by a colon. For example, in the tag `myapp:latest`, "myapp" is the repository name, and "latest" is the tag name. Tags are used to identify different versions of an image, allowing you to manage and deploy specific builds easily.
+
+there are 2 ways to share docker images: by pushing them to a container registry (like Docker Hub) or by saving them as tar files. Pushing to a registry allows others to pull the image easily, while saving as a tar file enables you to transfer the image manually via file sharing methods.
