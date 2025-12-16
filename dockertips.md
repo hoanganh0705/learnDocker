@@ -29,3 +29,40 @@ use docker cp when you need to extract logs or configuration files from a contai
 docker tags include 2 parts: the repository name and the tag name, separated by a colon. For example, in the tag `myapp:latest`, "myapp" is the repository name, and "latest" is the tag name. Tags are used to identify different versions of an image, allowing you to manage and deploy specific builds easily.
 
 there are 2 ways to share docker images: by pushing them to a container registry (like Docker Hub) or by saving them as tar files. Pushing to a registry allows others to pull the image easily, while saving as a tar file enables you to transfer the image manually via file sharing methods.
+
+We can use docker save to export a Docker image to a tar file. This is useful for backing up images or transferring them to another system without using a container registry. The command `docker save -o <filename>.tar <image_name>` creates a tar file containing the specified image.
+
+We can create anonymous volumes in a Dockerfile using the VOLUME instruction. This instruction specifies a mount point within the container where data can be stored. When a container is created from the image, Docker automatically creates an anonymous volume at that location to persist data.
+
+We can not create named volumes in a Dockerfile because named volumes are managed by the Docker daemon and are created at runtime, not during the image build process. The Dockerfile is used to define the image's filesystem and configuration, but it does not have the capability to create or manage volumes, which are external to the image itself. Named volumes are typically created and specified when running a container using the `docker run` command with the `-v` or `--mount` options.
+
+To create or load a named volume while running a container, you can use the `-v` or `--mount` flag with the `docker run` command. For example, to create a named volume called "mydata" and mount it to the `/data` directory in the container, you can use the following command:
+
+```docker run -v mydata:/data myimage
+
+```
+
+To load an existing named volume, you can use the same command, and Docker will automatically use the existing volume if it already exists:
+
+````docker run -v mydata:/data myimage
+```This way, you can create or load named volumes when starting a container.
+
+To create a bind mount while running a container, you can use the `-v` or `--mount` flag with the `docker run` command. A bind mount allows you to mount a directory from your host machine into the container. For example, to mount the host directory `/path/on/host` to the container directory `/path/in/container`, you can use the following command:
+```docker run -v /path/on/host:/path/in/container myimage
+````
+
+Alternatively, using the `--mount` flag:
+
+````docker run --mount type=bind,source=/path/on/host,target=/path/in/container myimage
+```This way, you can create a bind mount to share files between the host and the conta  iner.
+````
+
+-v tag has 2 ways to use: use to create a new volume by copying the data from the image to the volume, or use to mount an existing volume or host directory into the container.
+
+When you use `-v /container/path`, Docker creates a new anonymous volume and copies the data from the image at that path into the volume.
+
+When you use `-v volume_name:/container/path` or `-v /host/path:/container/path`, Docker mounts the specified existing volume or host directory into the container at the specified path, without copying any data from the image.
+
+ro means read-only. When you mount a volume or bind mount with the `:ro` option, the container can only read data from that mount point and cannot make any changes to it. This is useful for protecting data that should not be modified by the container, ensuring that the original data remains intact. For example, using `-v /host/path:/container/path:ro` mounts the host directory as read-only inside the container.
+
+ro restricts the container's ability to modify the data in the mounted volume or bind mount, providing an additional layer of data protection.
