@@ -66,3 +66,36 @@ When you use `-v volume_name:/container/path` or `-v /host/path:/container/path`
 ro means read-only. When you mount a volume or bind mount with the `:ro` option, the container can only read data from that mount point and cannot make any changes to it. This is useful for protecting data that should not be modified by the container, ensuring that the original data remains intact. For example, using `-v /host/path:/container/path:ro` mounts the host directory as read-only inside the container.
 
 ro restricts the container's ability to modify the data in the mounted volume or bind mount, providing an additional layer of data protection.
+
+we can set environment variables in 2 ways: in the Dockerfile using the ENV instruction, or at runtime using the -e or --env flag with the docker run command. For example, in a Dockerfile, you can set an environment variable like this:
+
+```ENV MY_VAR=value
+
+```
+
+At runtime, you can set an environment variable like this:
+
+```
+docker run -e MY_VAR=value myimage
+```
+
+or in a third way, we can use --env-file to load environment variables from a file when running a container. This method allows you to specify a file containing key-value pairs of environment variables, which Docker will read and set in the container. For example, if you have a file named `env.list` with the following content:
+
+```MY_VAR1=value1
+MY_VAR2=value2
+```
+
+You can run a container and load these environment variables using the following command:
+
+```docker run --env-file ./.env myimage
+
+```
+
+We can use ARG to define build-time variables in a Dockerfile. These variables can be passed during the build process using the --build-arg flag with the docker build command. ARG variables are only available during the image build and are not accessible in the running container. For example, in a Dockerfile, you can define an ARG variable like this:
+
+`````ARG PORT=80
+
+```Then, when building the image, you can override the default value like this:
+```docker build --build-arg PORT=8080 -t myimage .
+````This allows you to customize the build process based on different parameters.
+`````
