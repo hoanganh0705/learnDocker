@@ -99,3 +99,43 @@ We can use ARG to define build-time variables in a Dockerfile. These variables c
 ```docker build --build-arg PORT=8080 -t myimage .
 ````This allows you to customize the build process based on different parameters.
 `````
+
+We can use host.docker.internal to connect from a Docker container to services running on the host machine. This special DNS name resolves to the internal IP address of the host, allowing containers to access host services without needing to know the host's actual IP address. This is particularly useful for development and testing scenarios where you want a containerized application to communicate with a database or API running on the host. For example, if you have a database running on the host at port 27017, you can connect to it from a container using the connection string `mongodb://host.docker.internal:27017`.
+
+And to connect to the public API from the container, you can simply use the standard public URL or IP address of the API, as the container has access to the internet by default. For example, if you want to connect to a public API at `https://api.example.com`, you can use that URL directly in your application code running inside the container.
+
+if you want to connect current container to another container, you can use docker inspect to find the IP address of the target container and use that IP address in your current container to establish a connection. You can get the IP address by running the following command:
+
+```docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <target_container_name_or_id>
+
+```
+
+For example, if you have a MongoDB container named "mongodb-container", you can find its IP address and use it to connect from your application container.
+mongoose.connect(
+'mongodb://<mongodb-container-ip>:27017/swfavorites',
+{ useNewUrlParser: true },
+(err) => {
+if (err) {
+console.error('Failed to connect to MongoDB', err);
+} else {
+console.log('Connected to MongoDB');
+app.listen(3000, () => {
+console.log('Server is running on port 3000');
+});
+}
+}
+);
+
+unlike volumes, networks can not be automatically created from a docker run command. Networks must be created explicitly using the docker network create command before they can be used by containers. Once a network is created, you can connect containers to it using the --network flag when running or creating containers.
+
+Docker net work is used for inter-container communication. It allows containers to communicate with each other within the same network, enabling them to share data and services securely. Networks provide isolation between different sets of containers, ensuring that only containers connected to the same network can interact with each other. This is particularly useful for microservices architectures, where different services need to communicate while remaining isolated from other services.
+
+to run a container and connect it to a specific network, you can use the --network flag with the docker run command. For example, if you have a network named "my-network" and you want to run a container from the "myapp" image and connect it to that network, you can use the following command:
+
+````docker run --network my-network myapp
+
+```This will start the container and connect it to the specified network, allowing it to communicate with other containers on the same network.
+````
+
+when 2 containers are on the same user-defined network, they can communicate with each other using their container names as hostnames. Docker's built-in DNS service resolves these names to the appropriate IP addresses within the network. For example, if you have a container named "webapp" and another named "database" on the same network, the "webapp" container can connect to the "database" container using the hostname "database". This makes it easy to set up inter-container communication without needing to know the specific IP addresses of the containers.
+'mongodb://mongodb:27017/swfavorites',
