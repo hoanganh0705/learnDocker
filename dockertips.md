@@ -139,3 +139,66 @@ to run a container and connect it to a specific network, you can use the --netwo
 
 when 2 containers are on the same user-defined network, they can communicate with each other using their container names as hostnames. Docker's built-in DNS service resolves these names to the appropriate IP addresses within the network. For example, if you have a container named "webapp" and another named "database" on the same network, the "webapp" container can connect to the "database" container using the hostname "database". This makes it easy to set up inter-container communication without needing to know the specific IP addresses of the containers.
 'mongodb://mongodb:27017/swfavorites',
+
+By default, when you use docker-compose your services will be down when you stop the docker-compose process. To keep the services running in the background, you can use the -d (detached) flag when starting your docker-compose setup. For example:
+
+````docker-compose up -d
+```This command will start all the services defined in your docker-compose.yaml file and run them in the background, allowing you to continue using your terminal while the services are running
+````
+
+in docker compose file, you need to use a dash whenever you have a single value in list and no dash when you have key-value pairs in a map. For example, in the volumes section, each volume is listed with a dash:
+volumes:
+
+- mongo-data:/data/db
+
+When you use docker compose, networks are created automatically for your services. By default, docker compose creates a single network for all the services defined in the docker-compose.yaml file. Each service can communicate with other services on the same network using their service names as hostnames. This automatic network creation simplifies inter-service communication and isolation.
+
+you must declare volumes in the volumes section at the bottom of the docker-compose.yaml file to use named volumes. This section defines the named volumes that can be referenced by services in the compose file. For example:
+volumes:
+mongo-data:
+driver: local
+This declaration creates a named volume called "mongo-data" that can be used by services in the docker-compose.yaml file.
+
+If you use the same named volume across multiple services in a docker-compose file, the data stored in that volume will be shared among those services. This means that any changes made to the data by one service will be reflected in the other services that use the same volume. This is useful for sharing persistent data, such as databases or configuration files, between different services in your application.
+
+build options in a docker-compose file allows you to specify how to build a Docker image for a service. You can define the context (the directory containing the Dockerfile), the Dockerfile name, and any build arguments needed for the build process. This is useful when you want to create custom images for your services directly from the compose file.
+
+we just need to use relative paths instead of absolute path when bind mounting host directories in a docker-compose file. Relative paths are based on the location of the docker-compose.yaml file, making it easier to manage and share the compose file across different environments without needing to change absolute paths.
+
+you don't need to add bindmount paths in the volumes section at the bottom of the docker-compose.yaml file. Bind mounts are specified directly within the service definition under the volumes key.
+
+you also don't need to add anonymous volumes in the volumes section at the bottom of the docker-compose.yaml file. Anonymous volumes are created automatically by Docker when you specify a volume without a name in the service definition. They do not require explicit declaration in the volumes section.
+
+depends_on in a docker-compose file is used to specify the order in which services should be started. It ensures that a service will only start after the services it depends on have been started. However, it does not wait for the dependent services to be fully ready or healthy; it only ensures that they have been started. For example, if a web service depends on a database service, you can use depends_on to ensure that the database service starts before the web service.
+services:
+web:
+depends_on: - db
+db:
+image: mongo
+
+This configuration ensures that the "db" service starts before the "web" service.
+
+depends_on is only available in docker compose, we can't use it in plain docker run commands or dockerfiles. It is a feature specific to docker compose that helps manage the startup order of services defined in a docker-compose.yaml file.
+
+if your service use a db service, in your connection string, you should use the service name of the db service as the hostname. For example, if your db service is named "mongodb" in your docker-compose file, your connection string should look like this:
+'mongodb://mongodb:27017/swfavorites',
+This allows your application service to connect to the database service using Docker's internal DNS resolution. And in this case, the name of the container does not matter, only the service name defined in the docker-compose file is important for inter-service communication.
+
+in docker compose up command we can add --build to force rebuild of the images before starting the containers. This is useful when you have made changes to the Dockerfile or the application code and want to ensure that the latest version is used. For example:
+
+````docker-compose up --build
+```This command will rebuild the images for all services defined in the docker-compose.yaml file before starting the containers.
+````
+
+you can only build images not trigger a container by using docker compose build command. This command reads the docker-compose.yaml file and builds the images for the services defined in it, but it does not start any containers. For example:
+
+````docker-compose build
+```This command will build the images for all services without starting the containers.
+````
+
+You can assign the container name in docker compose file using the container_name key under the service definition. For example:
+services:
+web:
+container_name: my-web-container
+image: my-web-image
+This configuration will create a container named "my-web-container" when the web service is started.
