@@ -202,3 +202,32 @@ web:
 container_name: my-web-container
 image: my-web-image
 This configuration will create a container named "my-web-container" when the web service is started.
+
+use docker exec to run commands inside a running container. This allows you to interact with the container's environment without needing to attach to it. For example, you can use `docker exec -it <container_id> /bin/sh` to open a shell session inside the container, enabling you to run commands and inspect the container's state.
+
+you can override the default command specified in a Dockerfile by providing a new command when running the container with docker run. This allows you to customize the behavior of the container at runtime. For example, if the Dockerfile specifies a default command to start a web server, you can override it to run a different command, such as opening a shell session. For example:
+
+````docker run -it myimage /bin/sh
+```This command will start the container and run the `/bin/sh` command instead of the default command defined
+````
+
+to run the container using node without installing node in the host machine, you can use a bindmount to mount your application code into a Docker container that has Node.js installed. This way, you can run your Node.js application inside the container without needing to install Node.js on your host machine. First you need to create a Dockerfile and build the node image. For example:
+
+````docker run -it -v $(pwd):/app -w /app nodeutil npm init
+```This command mounts your application code from the host to the `/app` directory in the container, sets the working directory to `/app`, and runs your Node.js script using the official Node.js Docker image.
+````
+
+entrypoint in a Dockerfile is used to define the main command that will be executed when a container is started from the image. It sets the default executable for the container and allows you to pass additional arguments when running the container. The ENTRYPOINT instruction is typically used for applications that should always run a specific command, while still allowing for flexibility in passing arguments. For example, in a Dockerfile, you can set the entrypoint like this:
+
+````ENTRYPOINT ["node", "app.js"]
+
+```This configuration ensures that when the container starts, it will always run `node app.js`, and you can pass additional arguments if needed.
+````
+
+cmd can be replaced, but entrypoint can not be replaced when running a container. CMD provides default arguments for the ENTRYPOINT command, but if you specify a different command when running the container, it will override the CMD instruction. However, the ENTRYPOINT command itself remains unchanged and will always be executed when the container starts.
+
+When you have only 1 service in your docker-compose file, you must start the service by specifying its name after the docker-compose up command. For example, if your service is named "npm", you would start it with:
+
+````docker-compose run npm
+```This command will start only the "npm" service defined in your docker-compose.yaml file.
+````
