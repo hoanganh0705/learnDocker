@@ -13,6 +13,15 @@ We can indirectly create a service by exposing the deployment. For example, we c
 Now to check the service, we can use kubectl get service to get the list of services.
 Now we need to create external link by commanding minikube service <service-name> to open the service in a web browser.
 If you want to run mutiple pods, you can use kubectl scale deployment <deployment-name> --replicas=3 to scale the deployment to 3 pods.
+you can use kubectl set image deployment/<deployment-name> <container-name>=<image-name> to update the image of the deployment. But the image can not be updated if it is not be updated with the new tag in docker registry.
+You can use kubectl rollout status deployment/<deployment-name> to check the status of the deployment.
+rollout = quá trình Kubernetes triển khai hoặc cập nhật phiên bản mới của một workload một cách có kiểm soát.
+
+for example if you want to rollback to the previous version of the deployment, you can use kubectl rollout undo deployment/<deployment-name>. you use this command in the case that the new version is not working as expected.
+If you want to rollback to a specific version of the deployment, you can use kubectl rollout undo deployment/<deployment-name> --to-revision=<revision-number>.
+
+If you want to see full history of the deployment, you can use kubectl rollout history deployment/<deployment-name>.
+If you want to see what happens in the specific revision, you can use kubectl rollout history deployment/<deployment-name> --revision=<revision-number>.
 
 Kubernestes concepts:
 
