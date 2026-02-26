@@ -23,6 +23,16 @@ If you want to rollback to a specific version of the deployment, you can use kub
 If you want to see full history of the deployment, you can use kubectl rollout history deployment/<deployment-name>.
 If you want to see what happens in the specific revision, you can use kubectl rollout history deployment/<deployment-name> --revision=<revision-number>.
 
+In the declarative approach, we describe the desired state of the application and Kubernetes will try to achieve that state. If we need to update anything we just only need to change the yaml file and then apply it again.
+
+We can delete the resource by using kubectl delete -f <filename>.yaml. This will not only delete the resource but also delete the pods that are created by the resource.
+
+You can delete a deployment through label by using kubectl delete deployment -l <label-name>=<label-value>
+
+livenessProbe is used to check if the pod is alive and well. If the pod is not alive and well, it will be restarted.
+
+volume in Kubernetes belongs to pod so volumes will survive container restart
+
 Kubernestes concepts:
 
 - Cluster is a collection of nodes that run containerized applications managed by Kubernetes. It contains a control plane and worker nodes.

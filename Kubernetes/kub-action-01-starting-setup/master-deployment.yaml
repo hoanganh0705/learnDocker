@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: second-app
+  ports:
+    - protocol: TCP
+      #port in the service
+      port: 80
+      #port in the container
+      targetPort: 8080
+    # - protocol: TCP
+    #   port: 443
+    #   targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: second-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: second-app
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: second-app
+        tier: backend
+    spec:
+      containers:
+        - name: second-app
+          image: anhnguyen75/kub-first-app
+        # - name:
+        #   image:
