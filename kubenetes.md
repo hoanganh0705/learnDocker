@@ -33,6 +33,8 @@ livenessProbe is used to check if the pod is alive and well. If the pod is not a
 
 volume in Kubernetes belongs to pod so volumes will survive container restart
 
+Ingress = HTTP/HTTPS router cho traffic từ bên ngoài vào cluster.
+
 Kubernestes concepts:
 
 - Cluster is a collection of nodes that run containerized applications managed by Kubernetes. It contains a control plane and worker nodes.
