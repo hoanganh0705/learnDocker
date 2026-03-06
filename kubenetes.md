@@ -35,6 +35,9 @@ volume in Kubernetes belongs to pod so volumes will survive container restart
 
 Ingress = HTTP/HTTPS router cho traffic từ bên ngoài vào cluster.
 
+emptyDir = emptyDir is not persistent volume, it will be deleted when the pod is deleted and the data just can be shared between containers in the same pod.
+hostPath = hostPath is mounted directly to the host node's filesystem, the data will be persistent even if the pod is deleted, the data can be shared among pods in the same node
+
 Kubernestes concepts:
 
 - Cluster is a collection of nodes that run containerized applications managed by Kubernetes. It contains a control plane and worker nodes.
