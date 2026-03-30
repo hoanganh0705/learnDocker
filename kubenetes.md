@@ -38,6 +38,11 @@ Ingress = HTTP/HTTPS router cho traffic từ bên ngoài vào cluster.
 emptyDir = emptyDir is not persistent volume, it will be deleted when the pod is deleted and the data just can be shared between containers in the same pod.
 hostPath = hostPath is mounted directly to the host node's filesystem, the data will be persistent even if the pod is deleted, the data can be shared among pods in the same node
 
+use kubectl get sc to view storage classes
+storage classes are resources that define the type of storage available in the cluster.
+
+many deployments' pods can interact with eachother by connect to the service with coredns
+
 Kubernestes concepts:
 
 - Cluster is a collection of nodes that run containerized applications managed by Kubernetes. It contains a control plane and worker nodes.
